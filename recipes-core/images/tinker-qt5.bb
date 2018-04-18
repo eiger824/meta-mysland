@@ -61,6 +61,10 @@ QT5_TOOLS = " \
     qtchooser \
     "
 
+QT5_OWN = " \
+    qtfoo \
+    "
+
 FONTS = " \
 	fontconfig \
 	fontconfig-dev \
@@ -72,6 +76,7 @@ IMAGE_INSTALL += " \
     ${QT5_PKGS} \
     ${QT5_CONN} \
     ${QT5_TOOLS} \
+    ${QT5_OWN} \
     ${FONTS} \
     "
 
