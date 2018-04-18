@@ -1,1 +1,6 @@
-SRC_URI = "git://github.com/eiger824/open-zwave.git;protocol=https"
+# Apply our custom patches
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+
+SRC_URI += " \
+    file://0001-Custom-modifications.patch \
+    "

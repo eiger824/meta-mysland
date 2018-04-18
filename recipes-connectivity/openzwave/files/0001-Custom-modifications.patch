@@ -1,0 +1,209 @@
+From ed6271867dc52a0cdfc3b6f5105afafe41dc567f Mon Sep 17 00:00:00 2001
+From: Santi Pagola <santipagola@gmail.com>
+Date: Wed, 18 Apr 2018 12:13:25 +0200
+Subject: [PATCH] Custom modifications
+
+---
+ cpp/examples/MinOZW/Main.cpp |  3 ++-
+ cpp/src/Driver.cpp           | 22 ++++++++++++++++++++++
+ cpp/src/Manager.cpp          |  3 ++-
+ cpp/src/Msg.cpp              |  4 +++-
+ cpp/src/Msg.h                |  5 +++++
+ cpp/src/Options.cpp          | 29 ++++++-----------------------
+ cpp/src/Options.h            |  2 +-
+ 7 files changed, 41 insertions(+), 27 deletions(-)
+
+diff --git a/cpp/examples/MinOZW/Main.cpp b/cpp/examples/MinOZW/Main.cpp
+index 6654355..849632a 100644
+--- a/cpp/examples/MinOZW/Main.cpp
++++ b/cpp/examples/MinOZW/Main.cpp
+@@ -268,7 +268,8 @@ int main( int argc, char* argv[] )
+ 	// The first argument is the path to the config files (where the manufacturer_specific.xml file is located
+ 	// The second argument is the path for saved Z-Wave network state and the log file.  If you leave it NULL 
+ 	// the log file will appear in the program's working directory.
+-	Options::Create( "../../../config/", "", "" );
++    bool success {true};
++    Options::Create( "../../../config/", "", "" , success);
+ 	Options::Get()->AddOptionInt( "SaveLogLevel", LogLevel_Detail );
+ 	Options::Get()->AddOptionInt( "QueueLogLevel", LogLevel_Debug );
+ 	Options::Get()->AddOptionInt( "DumpTrigger", LogLevel_Error );
+diff --git a/cpp/src/Driver.cpp b/cpp/src/Driver.cpp
+index 4df3a24..9715ccd 100644
+--- a/cpp/src/Driver.cpp
++++ b/cpp/src/Driver.cpp
+@@ -130,6 +130,8 @@ static char const* c_sendQueueNames[] =
+ 		"Poll"
+ };
+ 
++static bool waitingForSwitchRsp { false };
++
+ 
+ //-----------------------------------------------------------------------------
+ // <Driver::Driver>
+@@ -657,6 +659,7 @@ bool Driver::ReadConfig
+ 	TiXmlDocument doc;
+ 	if( !doc.LoadFile( filename.c_str(), TIXML_ENCODING_UTF8 ) )
+ 	{
++        Log::Write( LogLevel_Error, "ERROR: could not find file '%s'.", filename.c_str());
+ 		return false;
+ 	}
+ 
+@@ -967,6 +970,14 @@ void Driver::SendMsg
+ 		MsgQueue const _queue
+ )
+ {
++    uint8 * buf = _msg->GetBuffer();
++    if (buf != NULL and  /* Valid buffer */
++            ( *(buf + 6) == 0x25  /* COMMAND_CLASS_SWITCH_BINARY */
++              and *(buf + 7) == 0x01 )) /* SwitchBinaryCmd_Set */
++    {
++        //TODO: implement extra queue with pending messages
++        waitingForSwitchRsp = true;
++    }
+ 	MsgQueueItem item;
+ 
+ 	item.m_command = MsgQueueCmd_SendMsg;
+@@ -1295,6 +1306,17 @@ void Driver::RemoveCurrentMsg
+ )
+ {
+ 	Log::Write( LogLevel_Detail, GetNodeNumber( m_currentMsg ), "Removing current message" );
++
++    /* Notify only if `waitingForSwitchRsp` is true */
++    if (waitingForSwitchRsp)
++    {
++        Notification * notification = new Notification(Notification::Type_Notification);
++        notification->SetHomeAndNodeIds( m_homeId, m_currentMsg->GetTargetNodeId());
++        QueueNotification( notification );
++        // And set it to false
++        waitingForSwitchRsp = false;
++    }
++
+ 	if( m_currentMsg != NULL)
+ 	{
+ 		delete m_currentMsg;
+diff --git a/cpp/src/Manager.cpp b/cpp/src/Manager.cpp
+index 25f3c1a..2e976d9 100644
+--- a/cpp/src/Manager.cpp
++++ b/cpp/src/Manager.cpp
+@@ -2549,7 +2549,8 @@ bool Manager::SetValue
+ )
+ {
+ 	bool res = false;
+-
++    cout << left << setw(40) << "Setting value:" << static_cast<int>(_value) << endl;
++    cout << left << setw(40) << "ValueType:" << static_cast<int>(_id.GetType()) << "\n\n\n" << endl;
+ 	if( ValueID::ValueType_Byte == _id.GetType() )
+ 	{
+ 		if( Driver* driver = GetDriver( _id.GetHomeId() ) )
+diff --git a/cpp/src/Msg.cpp b/cpp/src/Msg.cpp
+index 7b69b3e..36e8c03 100644
+--- a/cpp/src/Msg.cpp
++++ b/cpp/src/Msg.cpp
+@@ -65,6 +65,8 @@ Msg::Msg
+ 	m_expectedReply( 0 ),
+ 	m_expectedCommandClassId( _expectedCommandClassId ),
+ 	m_length( 4 ),
++    m_messageType( _msgType ),
++    m_functionType( _function ),
+ 	m_targetNodeId( _targetNodeId ),
+ 	m_sendAttempts( 0 ),
+ 	m_maxSendAttempts( MAX_TRIES ),
+@@ -238,7 +240,7 @@ string Msg::GetAsString()
+ 	{
+ 		if( i )
+ 		{
+-			str += ", ";
++            str += ", ";
+ 		}
+ 
+ 		snprintf( byteStr, sizeof(byteStr), "0x%.2x", m_buffer[i] );
+diff --git a/cpp/src/Msg.h b/cpp/src/Msg.h
+index a61c9a0..70ad141 100644
+--- a/cpp/src/Msg.h
++++ b/cpp/src/Msg.h
+@@ -59,6 +59,9 @@ namespace OpenZWave
+ 		void Finalize();
+ 		void UpdateCallbackId();
+ 
++        uint8 GetMessageType() const { return m_messageType; };
++        uint8 GetFunctionType() const { return m_functionType; };
++
+ 		/**
+ 		 * \brief Identifies the Node ID of the "target" node (if any) for this function.
+ 		 * \return Node ID of the target.
+@@ -182,6 +185,8 @@ namespace OpenZWave
+ 		uint8			m_expectedReply;
+ 		uint8			m_expectedCommandClassId;
+ 		uint8			m_length;
++        uint8           m_messageType;
++        uint8           m_functionType;
+ 		uint8			m_buffer[256];
+ 		uint8			e_buffer[256];
+ 
+diff --git a/cpp/src/Options.cpp b/cpp/src/Options.cpp
+index dd9bca0..74142e9 100644
+--- a/cpp/src/Options.cpp
++++ b/cpp/src/Options.cpp
+@@ -48,10 +48,11 @@ Options* Options::Create
+ (
+ 	string const& _configPath,
+ 	string const& _userPath,
+-	string const& _commandLine
++	string const& _commandLine,
++    bool & success
+ )
+ {
+-
++    success = true;
+ 	if( s_instance == NULL )
+ 	{
+ 		string configPath = _configPath;
+@@ -68,29 +69,11 @@ Options* Options::Create
+ 		}
+ 
+ 		FileOps::Create();
++        Log::Create( "", false, true, LogLevel_Debug, LogLevel_Debug, LogLevel_None );
+ 		if( !FileOps::FolderExists( configPath ) )
+ 		{
+-			Log::Create( "", false, true, LogLevel_Debug, LogLevel_Debug, LogLevel_None );
+-			/* Try some default directories */
+-			if ( FileOps::FolderExists( "config/" ) )
+-			{
+-				Log::Write( LogLevel_Error, "Cannot find a path to the configuration files at %s, Using config/ instead...", configPath.c_str() );
+-				configPath = "config/";
+-			} else if (FileOps::FolderExists("/etc/openzwave/" ) )
+-			{
+-				Log::Write( LogLevel_Error, "Cannot find a path to the configuration files at %s, Using /etc/openzwave/ instead...", configPath.c_str() );
+-				configPath = "/etc/openzwave/";
+-#ifdef SYSCONFDIR
+-			} else if ( FileOps::FolderExists(SYSCONFDIR ) )
+-			{
+-				Log::Write( LogLevel_Error, "Cannot find a path to the configuration files at %s, Using %s instead...", configPath.c_str(), SYSCONFDIR);
+-				configPath = SYSCONFDIR;
+-#endif
+-			} else {
+-				Log::Write( LogLevel_Error, "Cannot find a path to the configuration files at %s. Exiting...", configPath.c_str() );
+-				OZW_FATAL_ERROR(OZWException::OZWEXCEPTION_CONFIG, "Cannot Find Configuration Files");
+-				return NULL;
+-			}
++            success = false;
++            return NULL;
+ 		}
+ 		FileOps::Destroy();
+ 		s_instance = new Options( configPath, userPath, _commandLine );
+diff --git a/cpp/src/Options.h b/cpp/src/Options.h
+index ffa02e6..676292e 100644
+--- a/cpp/src/Options.h
++++ b/cpp/src/Options.h
+@@ -103,7 +103,7 @@ namespace OpenZWave
+ 		 * \return Pointer to the newly created Options object.
+ 		 * \see Get, Destroy, AddOption, GetOptionAs, Lock
+ 		 */
+-		static Options* Create( string const& _configPath, string const& _userPath, string const& _commandLine );
++        static Options* Create( string const& _configPath, string const& _userPath, string const& _commandLine, bool & success );
+ 
+ 		/**
+ 		 * Deletes the Options and cleans up any associated objects.
+-- 
+2.7.4
+
