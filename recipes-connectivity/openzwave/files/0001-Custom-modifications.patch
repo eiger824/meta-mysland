@@ -1,17 +1,18 @@
-From ed6271867dc52a0cdfc3b6f5105afafe41dc567f Mon Sep 17 00:00:00 2001
+From 7d375b0a9996eea5e8cbc6b522d3196d209b714d Mon Sep 17 00:00:00 2001
 From: Santi Pagola <santipagola@gmail.com>
 Date: Wed, 18 Apr 2018 12:13:25 +0200
 Subject: [PATCH] Custom modifications
 
 ---
- cpp/examples/MinOZW/Main.cpp |  3 ++-
- cpp/src/Driver.cpp           | 22 ++++++++++++++++++++++
- cpp/src/Manager.cpp          |  3 ++-
- cpp/src/Msg.cpp              |  4 +++-
- cpp/src/Msg.h                |  5 +++++
- cpp/src/Options.cpp          | 29 ++++++-----------------------
- cpp/src/Options.h            |  2 +-
- 7 files changed, 41 insertions(+), 27 deletions(-)
+ cpp/examples/MinOZW/Main.cpp                   |  3 ++-
+ cpp/src/Driver.cpp                             | 22 ++++++++++++++++
+ cpp/src/Manager.cpp                            |  3 ++-
+ cpp/src/Msg.cpp                                |  4 ++-
+ cpp/src/Msg.h                                  |  5 ++++
+ cpp/src/Options.cpp                            | 35 ++++++++------------------
+ cpp/src/Options.h                              |  2 +-
+ cpp/src/platform/unix/SerialControllerImpl.cpp |  3 ++-
+ 8 files changed, 47 insertions(+), 30 deletions(-)
 
 diff --git a/cpp/examples/MinOZW/Main.cpp b/cpp/examples/MinOZW/Main.cpp
 index 6654355..849632a 100644
@@ -141,7 +142,7 @@ index a61c9a0..70ad141 100644
  		uint8			e_buffer[256];
  
 diff --git a/cpp/src/Options.cpp b/cpp/src/Options.cpp
-index dd9bca0..74142e9 100644
+index dd9bca0..7329085 100644
 --- a/cpp/src/Options.cpp
 +++ b/cpp/src/Options.cpp
 @@ -48,10 +48,11 @@ Options* Options::Create
@@ -191,6 +192,19 @@ index dd9bca0..74142e9 100644
  		}
  		FileOps::Destroy();
  		s_instance = new Options( configPath, userPath, _commandLine );
+@@ -368,8 +351,10 @@ bool Options::Lock
+ 		return false;
+ 	}
+ 
+-	ParseOptionsXML( m_SystemPath + m_xml );
+-	ParseOptionsXML( m_LocalPath + m_xml);
++    if (!ParseOptionsXML( m_SystemPath + m_xml ))
++    {
++        ParseOptionsXML( m_LocalPath + m_xml);
++    }
+ 	ParseOptionsString( m_commandLine );
+ 	m_locked = true;
+ 
 diff --git a/cpp/src/Options.h b/cpp/src/Options.h
 index ffa02e6..676292e 100644
 --- a/cpp/src/Options.h
@@ -204,6 +218,20 @@ index ffa02e6..676292e 100644
  
  		/**
  		 * Deletes the Options and cleans up any associated objects.
+diff --git a/cpp/src/platform/unix/SerialControllerImpl.cpp b/cpp/src/platform/unix/SerialControllerImpl.cpp
+index b52b74f..925dfcd 100644
+--- a/cpp/src/platform/unix/SerialControllerImpl.cpp
++++ b/cpp/src/platform/unix/SerialControllerImpl.cpp
+@@ -190,7 +190,8 @@ bool SerialControllerImpl::Init
+ 	if( -1 == m_hSerialController )
+ 	{
+ 		//Error
+-		Log::Write( LogLevel_Error, "ERROR: Cannot open serial port %s. Error code %d", device.c_str(), errno );
++        Log::Write( LogLevel_Error, "ERROR: Cannot open serial port \"%s\". Error code: %d, Error message: \"%s\"",
++                device.c_str(), errno, strerror(errno) );
+ 		goto SerialOpenFailure;
+ 	}
+ 
 -- 
 2.7.4
 

@@ -4,10 +4,11 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
 DEPENDS += "qtbase"
+RDEPENDS_${PN} += "qtbase apache2 php openzwave"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
-PR = "r1"
+PR = "r7"
 
 SRC_URI = "git://github.com/eiger824/openzwave-qt5.git;protocol=https;branch=master;destsuffix=${PN}-${PV}"
 
@@ -43,6 +44,10 @@ do_install() {
     # Install D-Bus configuration file
     install -m 0644 ${S}/common/dbus/mysland-openzwave.conf ${D}/${sysconfdir}/dbus-1/system.d/mysland-openzwave.conf 
 
+    # Install systemd init script
+    install -d -m 0755 ${D}/${sysconfdir}/systemd/system
+    install -m 0755 ${S}/common/systemd/mysland-openzwave.service ${D}/${sysconfdir}/systemd/system/mysland-openzwave.service
+
     # Install web directory
     install -d -m 0755 ${D}/${datadir}/apache2/htdocs
     # Install web files
@@ -60,17 +65,21 @@ PACKAGES += "${PN}-srv ${PN}-cli"
 # Assign files to these packages
 FILES_COMMON = " \
     ${sysconfdir}/dbus-1/system.d/mysland-openzwave.conf \
+    ${sysconfdir}/systemd/system/mysland-openzwave.service \
     ${datadir}/apache2/htdocs/* \
     "
 
 FILES_${PN}-srv = " \
-    ${FILES_COMMON} \
     ${bindir}/ozw-daemon \
     "
 
 FILES_${PN}-cli = " \
-    ${FILES_COMMON} \
     ${bindir}/ozw-client \
     ${bindir}/ozw-proxy-client \
+    "
+
+# The general package contains everything
+FILES_${PN} = " \
+    ${FILES_COMMON} \
     "
 
