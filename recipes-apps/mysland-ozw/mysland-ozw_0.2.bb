@@ -8,7 +8,7 @@ RDEPENDS_${PN} += "qtbase apache2 php openzwave"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
-PR = "r7"
+PR = "r13"
 
 SRC_URI = "git://github.com/eiger824/openzwave-qt5.git;protocol=https;branch=master;destsuffix=${PN}-${PV}"
 
@@ -44,12 +44,12 @@ do_install() {
     # Install D-Bus configuration file
     install -m 0644 ${S}/common/dbus/mysland-openzwave.conf ${D}/${sysconfdir}/dbus-1/system.d/mysland-openzwave.conf 
 
-    # Install systemd init script
-    install -d -m 0755 ${D}/${sysconfdir}/systemd/system
-    install -m 0755 ${S}/common/systemd/mysland-openzwave.service ${D}/${sysconfdir}/systemd/system/mysland-openzwave.service
+    # Install systemd init script: install it as "ozwd" to keep the unix daemon naming format
+    install -d -m 0755 ${D}/${systemd_system_unitdir}
+    install -m 0644 ${S}/common/systemd/mysland-openzwave.service ${D}/${systemd_system_unitdir}/ozwd.service
 
-    # Install web directory
-    install -d -m 0755 ${D}/${datadir}/apache2/htdocs
+    # Install web directory: we want rwxrwxrwx permissions since a non-root user wants to write and read files
+    install -d -m 0777 ${D}/${datadir}/apache2/htdocs
     # Install web files
     install -m 0755 ${S}/web/home.html ${D}/${datadir}/apache2/htdocs/home.html
     install -m 0755 ${S}/web/action_switch_binary.php ${D}/${datadir}/apache2/htdocs/action_switch_binary.php
@@ -65,7 +65,7 @@ PACKAGES += "${PN}-srv ${PN}-cli"
 # Assign files to these packages
 FILES_COMMON = " \
     ${sysconfdir}/dbus-1/system.d/mysland-openzwave.conf \
-    ${sysconfdir}/systemd/system/mysland-openzwave.service \
+    ${systemd_system_unitdir}/ozwd.service \
     ${datadir}/apache2/htdocs/* \
     "
 
