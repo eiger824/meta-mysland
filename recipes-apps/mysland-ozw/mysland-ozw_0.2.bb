@@ -8,7 +8,7 @@ RDEPENDS_${PN} += "qtbase apache2 php openzwave"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
-PR = "r13"
+PR = "r16"
 
 SRC_URI = "git://github.com/eiger824/openzwave-qt5.git;protocol=https;branch=master;destsuffix=${PN}-${PV}"
 
@@ -42,14 +42,14 @@ do_install() {
     # Install d-bus configuration directory
     install -d -m 0755 ${D}/${sysconfdir}/dbus-1/system.d
     # Install D-Bus configuration file
-    install -m 0644 ${S}/common/dbus/mysland-openzwave.conf ${D}/${sysconfdir}/dbus-1/system.d/mysland-openzwave.conf 
+    install -m 0644 ${S}/common/dbus/mysland-openzwave.conf ${D}/${sysconfdir}/dbus-1/system.d/mysland-openzwave.conf
 
     # Install systemd init script: install it as "ozwd" to keep the unix daemon naming format
     install -d -m 0755 ${D}/${systemd_system_unitdir}
     install -m 0644 ${S}/common/systemd/mysland-openzwave.service ${D}/${systemd_system_unitdir}/ozwd.service
 
     # Install web directory: we want rwxrwxrwx permissions since a non-root user wants to write and read files
-    install -d -m 0777 ${D}/${datadir}/apache2/htdocs
+    install -d -m 0755 ${D}/${datadir}/apache2/htdocs
     # Install web files
     install -m 0755 ${S}/web/home.html ${D}/${datadir}/apache2/htdocs/home.html
     install -m 0755 ${S}/web/action_switch_binary.php ${D}/${datadir}/apache2/htdocs/action_switch_binary.php
@@ -59,13 +59,27 @@ do_install() {
     install -m 0644 ${S}/server/imgs/ozwlogo.png ${D}/${datadir}/apache2/htdocs/ozwlogo.png
 }
 
+pkg_postinst_${PN}() {
+    if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
+        if [ -n "$D" ]; then
+            OPTS="--root=$D"
+        fi
+        systemctl $OPTS enable ozwd.service
+    fi
+    # Change permissions to web directory
+    chmod 0777 ${datadir}/apache2/htdocs
+}
+
 # Create different packages with server or clients
-PACKAGES += "${PN}-srv ${PN}-cli"
+PACKAGES += "${PN}-srv ${PN}-cli ${PN}-web"
 
 # Assign files to these packages
 FILES_COMMON = " \
     ${sysconfdir}/dbus-1/system.d/mysland-openzwave.conf \
     ${systemd_system_unitdir}/ozwd.service \
+    "
+
+FILES_${PN}-web = " \
     ${datadir}/apache2/htdocs/* \
     "
 
@@ -78,7 +92,7 @@ FILES_${PN}-cli = " \
     ${bindir}/ozw-proxy-client \
     "
 
-# The general package contains everything
+# The general package contains configuration files only
 FILES_${PN} = " \
     ${FILES_COMMON} \
     "

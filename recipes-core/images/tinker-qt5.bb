@@ -80,6 +80,8 @@ IMAGE_INSTALL += " \
     ${FONTS} \
     "
 
+PR = "r2"
+
 # Export the image name
 export IMAGE_BASENAME = "tinker-qt5"
 
