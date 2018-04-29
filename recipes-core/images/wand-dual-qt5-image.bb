@@ -2,7 +2,7 @@ DESCRIPTION = "A console image with Qt5"
 
 LICENSE = "MIT"
 
-require wbdimg.bb
+require wand-dual-image.bb
 
 QT5_PKGS = " \
 	qt3d \
@@ -64,7 +64,6 @@ TSLIB = " \
 	"
 APPS = " \
 	mouseevents \
-	qt-launcher \
     ping-server \
     fallingblocks \
 	"
@@ -76,5 +75,9 @@ IMAGE_INSTALL += " \
 	${APPS} \
 	"
 
-export IMAGE_BASENAME = "wbdimg-qt5"
+export IMAGE_BASENAME = "wand-dual-qt5-image"
 
+# Exclude qtwebengine for now...
+IMAGE_INSTALL_remove = " \
+    qtwebengine \
+    "

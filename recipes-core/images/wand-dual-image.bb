@@ -107,5 +107,5 @@ IMAGE_INSTALL += " \
 	${TOOLS} \
 	"
 
-export IMAGE_BASENAME = "wbdimg"
+export IMAGE_BASENAME = "wand-dual-image"
 
