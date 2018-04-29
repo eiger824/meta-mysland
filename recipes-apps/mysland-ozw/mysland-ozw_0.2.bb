@@ -8,7 +8,7 @@ RDEPENDS_${PN} += "qtbase apache2 php openzwave"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
-PR = "r16"
+PR = "r17"
 
 SRC_URI = "git://github.com/eiger824/openzwave-qt5.git;protocol=https;branch=master;destsuffix=${PN}-${PV}"
 
@@ -57,6 +57,11 @@ do_install() {
 
     # Install ozw logo
     install -m 0644 ${S}/server/imgs/ozwlogo.png ${D}/${datadir}/apache2/htdocs/ozwlogo.png
+}
+
+do_install_append() {
+    # Workaround: don't use -platform flag
+    sed 's/\-platform eglfs//g' -i ${D}/${systemd_system_unitdir}/ozwd.service
 }
 
 pkg_postinst_${PN}() {
