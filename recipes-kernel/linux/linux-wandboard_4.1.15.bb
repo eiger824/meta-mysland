@@ -2,7 +2,7 @@
 # Released under the MIT license (see COPYING.MIT for the terms)
 
 include linux-wandboard.inc
-require recipes-kernel/linux/linux-dtb.inc
+require recipes-kernel/linux/linux-yocto.inc
 
 DEPENDS += "lzop-native bc-native"
 
