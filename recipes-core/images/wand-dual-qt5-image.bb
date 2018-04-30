@@ -4,30 +4,49 @@ LICENSE = "MIT"
 
 require wand-dual-image.bb
 
-QT5_PKGS = " \
+PV = "1.1"
+
+# Exclude for now. The problem is that since we are using the latest upstream kernel
+# (v4.16.5 as of 30/04/2018), the drivers for the Vivante GPU of the Wandboard Dual
+# haven't been ported to this kernel (they are valid up to kernel version 4.1.15??).
+# So instead, we will use the framebuffer to render graphics (sw rendering). The
+# major disadvantage is that we need to exclude many packages that require the GPU
+# driver (or some sort of OpenGL presence) which we are excluding from our builds
+# rightnow.
+
+QT5_PKGS_DONT_INCLUDE = " \
+	qtwebchannel \
+	qtwebengine \
+	qtwebkit-examples \
+	qtwebkit \
+	qtwebsockets \
+	qtxmlpatterns \
+	qtquick1 \
+	qtquickcontrols \
+	qtquickcontrols2 \
+	qtscxml \
 	qt3d \
+	qtcanvas3d \
+	qtdatavis3d \
+	qtgraphicaleffects \
+	qtenginio \
+	qtgamepad \
+	qtimageformats \
+    "
+
+QT5_PKGS = " \
 	qtbase \
 	qtbase-dev \
 	qtbase-mkspecs \
 	qtbase-plugins \
 	qtbase-tools \
-	qtcanvas3d \
 	qtcharts \
 	qtconnectivity \
-	qtdatavis3d \
 	qtdeclarative \
-	qtenginio \
-	qtgamepad \
-	qtgraphicaleffects \
-	qtimageformats \
 	qtlocation \
 	qtmultimedia \
 	qtnetworkauth \
-	qtquick1 \
-	qtquickcontrols \
-	qtquickcontrols2 \
 	qtscript \
-	qtscxml \
 	qtsensors \
 	qtserialbus \
 	qtserialport \
@@ -38,13 +57,6 @@ QT5_PKGS = " \
 	qttools \
 	qttranslations \
 	qtvirtualkeyboard \
-	qtwebchannel \
-	qtwebengine \
-	qtwebkit-examples \
-	qtwebkit \
-	qtwebsockets \
-	qtx11extras \
-	qtxmlpatterns \
 	"
 
 FONTS = " \
@@ -60,7 +72,6 @@ TSLIB = " \
 	tslib-calibrate \
 	tslib-conf \
 	tslib-dev \
-	tslib-tests \
 	"
 APPS = " \
 	mouseevents \
@@ -77,7 +88,3 @@ IMAGE_INSTALL += " \
 
 export IMAGE_BASENAME = "wand-dual-qt5-image"
 
-# Exclude qtwebengine for now...
-IMAGE_INSTALL_remove = " \
-    qtwebengine \
-    "
