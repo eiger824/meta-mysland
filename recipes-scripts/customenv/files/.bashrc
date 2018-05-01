@@ -32,6 +32,6 @@ alias env='env | sort'
 alias lsmod='lsmod | sort'
 
 # Opkg related
-alias ouu='opkg update && opkg upgrade'
+alias ouu='opkg update && opkg upgrade $@'
 alias oui='opkg update && opkg install $@'
 
