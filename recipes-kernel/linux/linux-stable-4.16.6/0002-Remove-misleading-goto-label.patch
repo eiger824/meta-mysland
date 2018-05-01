@@ -1,0 +1,64 @@
+From 30a37f4b304439bc81af97bca6ee77af6e83792f Mon Sep 17 00:00:00 2001
+From: Santi Pagola <santipagola@gmail.com>
+Date: Tue, 1 May 2018 12:15:34 +0200
+Subject: [PATCH] Remove misleading goto label
+
+---
+ .../wireless/broadcom/brcm80211/brcmfmac/sdio.c  | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 5f9d1d8f6f44..29ef61e4257d 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -3289,6 +3289,7 @@ static int brcmf_sdio_download_firmware(struct brcmf_sdio *bus,
+ 					const struct firmware *fw,
+ 					void *nvram, u32 nvlen)
+ {
++    int error_occurred;
+ 	int bcmerror;
+ 	u32 rstvec;
+ 
+@@ -3298,30 +3299,33 @@ static int brcmf_sdio_download_firmware(struct brcmf_sdio *bus,
+ 	rstvec = get_unaligned_le32(fw->data);
+ 	brcmf_info( "firmware rstvec: %x\n", rstvec);
+ 
++    error_occurred = 0;
+ 	bcmerror = brcmf_sdio_download_code_file(bus, fw);
+ 	release_firmware(fw);
+ 	if (bcmerror) {
+ 		brcmf_err("dongle image file download failed\n");
+ 		brcmf_fw_nvram_free(nvram);
+-		goto err;
++        error_occurred = 1;
+ 	}
+ 
+ 	bcmerror = brcmf_sdio_download_nvram(bus, nvram, nvlen);
+ 	brcmf_fw_nvram_free(nvram);
+ 	if (bcmerror) {
+ 		brcmf_err("dongle nvram file download failed\n");
+-		goto err;
++        error_occurred = 1;
+ 	}
+ 
+ 	/* Take arm out of reset */
+ 	if (!brcmf_chip_set_active(bus->ci, rstvec)) {
+ 		brcmf_err("error getting out of ARM core reset\n");
+-		goto err;
++        error_occurred = 1;
+ 	}
+ 
+-err:
+-	brcmf_sdio_clkctl(bus, CLK_SDONLY, false);
+-	sdio_release_host(bus->sdiodev->func1);
++    if (error_occurred)
++    {
++        brcmf_sdio_clkctl(bus, CLK_SDONLY, false);
++        sdio_release_host(bus->sdiodev->func1);
++    }
+ 	return bcmerror;
+ }
+ 
+-- 
+2.17.0
+
