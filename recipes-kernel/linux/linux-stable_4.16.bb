@@ -27,6 +27,7 @@ SRC_URI = " \
     file://defconfig \
     file://0001-Turn-on-logs-in-sdio.patch \
     file://0002-Remove-misleading-goto-label.patch \
+    file://0003-Leave-usdhc2-as-in-revB1-wandboards.patch \
     "
 SRCREV = "22bc2b8a6aa4f3c42ff243b1528afd498c8150b1"
 

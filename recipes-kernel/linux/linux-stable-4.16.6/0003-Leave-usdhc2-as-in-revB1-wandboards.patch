@@ -1,0 +1,27 @@
+From 4e5d4de6703dcb1f5e8bcbef6518f7773ba42651 Mon Sep 17 00:00:00 2001
+From: Santi Pagola <santipagola@gmail.com>
+Date: Tue, 1 May 2018 20:15:36 +0200
+Subject: [PATCH] Leave usdhc2 as in revB1 wandboards
+
+---
+ arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi b/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
+index 3a8a4952d45e..9b80bdfb2c45 100644
+--- a/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
+@@ -194,8 +194,8 @@
+ &usdhc2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usdhc2>;
+-	bus-width = <4>;
+-	no-1-8-v;
++    /* bus-width = <4>; */
++    /* no-1-8-v;*/
+ 	non-removable;
+ 	status = "okay";
+ };
+-- 
+2.17.0
+
