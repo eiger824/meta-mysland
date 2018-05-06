@@ -1,2 +1,2 @@
-export QT_QPA_PLATFORM=eglfs
+export QT_QPA_PLATFORM=linuxfb
 export QT_IM_MODULE=qtvirtualkeyboard

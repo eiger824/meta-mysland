@@ -1,0 +1,40 @@
+From 6ea4ecd3db7fc11b6a4dc6e1bf9577df347724ca Mon Sep 17 00:00:00 2001
+From: Santi Pagola <santipagola@gmail.com>
+Date: Sat, 5 May 2018 09:45:26 +0200
+Subject: [PATCH] Change for Yocto builds
+
+---
+ Makefile | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index e1d5884..a6c5d7c 100755
+--- a/Makefile
++++ b/Makefile
+@@ -1,12 +1,18 @@
+ obj-m := mchpar1xxx.o
+ 
+-KDIR := /lib/modules/$(shell uname -r)/build
+ PWD := $(shell pwd)
+ 
+-default:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules 
+-	gcc -o inputactivate inputactivate.c
+-	gcc -o inputverify inputverify.c
++all: ar1xxx_module ar1xxx_userspace
++
++ar1xxx_module:
++	$(MAKE) -C $(KERNEL_SRC) SUBDIRS=$(PWD) modules 
++
++ar1xxx_userspace:
++	$(CC) $(TARGET_CFLAGS) -o inputactivate inputactivate.c
++	$(CC) $(TARGET_CFLAGS) -o inputverify inputverify.c
++
++modules_install:
++	$(MAKE) -C $(KERNEL_SRC) SUBDIRS=$(PWD) INSTALL_MOD_DIR=drivers/input/touchscreen modules_install
+ 
+ clean:
+ 	rm -f *.o *.cmd *.mod.c .*.o* .*.ko* *~ *.ko inputactivate inputverify
+-- 
+2.17.0
+

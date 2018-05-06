@@ -6,7 +6,7 @@ RDEPENDS_kernel-base += "kernel-devicetree"
 
 S = "${WORKDIR}/git"
 
-PV = "4.16.6"
+PV = "4.16.7"
 
 KERNEL_DEVICETREE = " \
     am335x-boneblack.dtb \
@@ -21,7 +21,7 @@ SRC_URI = " \
     file://defconfig \
     "
 
-SRCREV = "22bc2b8a6aa4f3c42ff243b1528afd498c8150b1"
+SRCREV = "9dc30ff9a115559cc55673d0b1d3c576402d073e"
 
 PACKAGES =+ "kernel-headers"
 FILES_kernel-headers = "${exec_prefix}/src/linux*"

@@ -1,0 +1,111 @@
+From 87c1c79e161dac3cb18f8254227c35baeaa067cf Mon Sep 17 00:00:00 2001
+From: Santi Pagola <santipagola@gmail.com>
+Date: Sat, 5 May 2018 15:19:27 +0200
+Subject: [PATCH] Remove unnecessary steps for Yocto builds
+
+---
+ install.sh | 60 +++++++++++++++++++++++++++---------------------------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
+
+diff --git a/install.sh b/install.sh
+index b58759f..522ec17 100755
+--- a/install.sh
++++ b/install.sh
+@@ -3,21 +3,21 @@
+ echo "Note: If errors are found at any point in the script, please see online documentation at www.microchip.com"
+ echo "on how to setup target linux target build dependencies to resolve these errors."
+ echo
+-echo "Building kernel source"
+-make 
+-echo "Installing kernel module"
+-cp -v *.ko /lib/modules/$(uname -r)/kernel/drivers/input/touchscreen
+-depmod -q
+-echo "Installing touchscreen verification tool"
+-cp -v ./inputverify /usr/local/bin
+-echo "Installing touchscreen activation tool"
+-cp -v ./inputactivate /usr/local/bin
++# echo "Building kernel source"
++# make 
++# echo "Installing kernel module"
++# cp -v *.ko /lib/modules/$(uname -r)/kernel/drivers/input/touchscreen
++# depmod -q
++# echo "Installing touchscreen verification tool"
++# cp -v ./inputverify /usr/local/bin
++# echo "Installing touchscreen activation tool"
++# cp -v ./inputactivate /usr/local/bin
+ 
+ echo "Loading kernel module"
+ modprobe mchpar1xxx
+ echo
+-echo "Installing udev rule"
+-cp 10-ar1xxxuart.rules /etc/udev/rules.d -v
++# echo "Installing udev rule"
++# cp 10-ar1xxxuart.rules /etc/udev/rules.d -v
+ echo
+ echo "Querying system for attached AR1XXX controller."
+ echo "Please touch the touchscreen, press Enter,"
+@@ -26,42 +26,42 @@ echo
+ echo "This process will allow the utility to detect the device path of the attached controller."
+ read tmp1
+ 
+-./inputverify -f -p AR1XXX
++inputverify -f -p AR1XXX
+ 
+ echo "Please enter the device path string from detected controller list above: "
+ read devicePath
+ 
+-echo "Installing udev rule."
++# echo "Installing udev rule."
+ 
+ echo -n "Activating driver..."
+-./inputactivate -ar1xxx $devicePath &
++inputactivate -ar1xxx $devicePath &
+ 
+ echo "Done."
+ echo
+ echo "Verifying good activation of touch driver."
+-./inputverify -f -p EVDEV
++inputverify -f -p EVDEV
+ 
+ echo "Touch device should now be listed above. "
+ echo "If X11 is running, the cursor should now move as a result of a touch."
+ echo
+-echo "After kernel upgrades, the Microchip kernel module will need to be rebuilt from source.  DKMS is a common utility used by distributions to recompile kernel modules that are not part of the mainstream kernel tree during kernel upgrades.  Attempting to register with DKMS now."
+-echo 
+-mkdir -p /usr/src/AR1XXX-LINUX-UART-V102
+-cp * /usr/src/AR1XXX-LINUX-UART-V102
+-dkms add -m AR1XXX-LINUX-UART -v V102
+-dkms build -m AR1XXX-LINUX-UART -v V102
+-dkms install -m AR1XXX-LINUX-UART -v V102
++# echo "After kernel upgrades, the Microchip kernel module will need to be rebuilt from source.  DKMS is a common utility used by distributions to recompile kernel modules that are not part of the mainstream kernel tree during kernel upgrades.  Attempting to register with DKMS now."
++# echo 
++# mkdir -p /usr/src/AR1XXX-LINUX-UART-V102
++# cp * /usr/src/AR1XXX-LINUX-UART-V102
++# dkms add -m AR1XXX-LINUX-UART -v V102
++# dkms build -m AR1XXX-LINUX-UART -v V102
++# dkms install -m AR1XXX-LINUX-UART -v V102
+ echo
+-echo -n "To have the kernel module automatically load and activate, please modify the appropriate startup script under the /etc directory.  "
+-echo -n "Usually this file is /etc/rc.local but often is slightly different between Linux distributions.  "
+-echo "In this file, place the following lines before the \"exit 0\" at the end of the file (or at the end of the file if this line doesn't exists):"
+-echo
+-echo "modprobe mchpar1xxx"
+-echo "/usr/local/bin/inputactivate -d ${devicePath} -p AR1XXX &"
+-echo 
++# echo -n "To have the kernel module automatically load and activate, please modify the appropriate startup script under the /etc directory.  "
++# echo -n "Usually this file is /etc/rc.local but often is slightly different between Linux distributions.  "
++# echo "In this file, place the following lines before the \"exit 0\" at the end of the file (or at the end of the file if this line doesn't exists):"
++# echo
++# echo "modprobe mchpar1xxx"
++# echo "/usr/local/bin/inputactivate -d ${devicePath} -p AR1XXX &"
++# echo 
+ echo "The following Microchip evdev device paths been detected:"
+ echo
+-./inputverify -f -p EVDEV
++inputverify -f -p EVDEV
+ echo
+ echo "Installation complete."
+ echo
+-- 
+2.17.0
+

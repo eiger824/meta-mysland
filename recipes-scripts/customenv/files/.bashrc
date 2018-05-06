@@ -35,3 +35,6 @@ alias lsmod='lsmod | sort'
 alias ouu='opkg update && opkg upgrade'
 alias oui='opkg update && opkg install $@'
 
+# Workaround with rfkill
+rfkill unblock all
+

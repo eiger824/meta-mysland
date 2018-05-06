@@ -1,0 +1,67 @@
+From c649e8d0f150c989428622cc4f0e10a53e2c4085 Mon Sep 17 00:00:00 2001
+From: Santi Pagola <santipagola@gmail.com>
+Date: Sat, 5 May 2018 16:06:38 +0200
+Subject: [PATCH] Uncomment some printouts
+
+---
+ inputverify.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/inputverify.c b/inputverify.c
+index 8b63f90..48ddadd 100755
+--- a/inputverify.c
++++ b/inputverify.c
+@@ -508,7 +508,7 @@ int decode(sharedDataType* sharedData, char *devicePath, int protocol, int baudr
+ 		{
+ 			ioctl(sharedData->fd, EVIOCGNAME(sizeof(name)), name);
+ 	//		Uncomment the next line to get a full list of kernel input names
+-	//		printf("Input device name: \"%s\"\n", name);
++            printf("Input device name: \"%s\"\n", name);
+ 			if ((strstr(name,"Hampshire")) || (strstr(name,"Microchip")))
+ 			{
+ 				return 1;
+@@ -553,10 +553,10 @@ int decode(sharedDataType* sharedData, char *devicePath, int protocol, int baudr
+ 		{
+ 			num_read_bytes = read(sharedData->fd,&byte,1);
+ //			Uncomment the section below to monitor data byte stream
+-//			if (0!=num_read_bytes)
+-//			{
+-//				printf("byte: 0x%02x\n",byte);
+-//			}
++            if (0!=num_read_bytes)
++            {
++                printf("byte: 0x%02x\n",byte);
++            }
+ 		}
+ 
+ 		// if no bytes read (which is expected if there is no touch), then determine how we handle this
+@@ -660,7 +660,7 @@ int decode(sharedDataType* sharedData, char *devicePath, int protocol, int baudr
+ 			// processing packet byte
+ 			else
+ 			{				
+-//				printf("Good byte 0x%02x at index %d\n",byte,index);
++                printf("Good byte 0x%02x at index %d\n",byte,index);
+ 			}
+ 
+ 			// if maxPacketsToRead set, decode only up to maxPacketsToRead value
+@@ -799,7 +799,7 @@ int main(int argc, char **argv)
+ 				else
+ 				{
+ 	// 				Uncomment to display paths the controller was not detected at
+-	//				printf("not found at %s\n",devicePath);
++                    printf("not found at %s\n",devicePath);
+ 				}
+ 			}
+ 
+@@ -824,7 +824,7 @@ int main(int argc, char **argv)
+ 				}
+ 				else
+ 				{
+-	//				printf("not found at %s\n",devicePath);
++                    printf("not found at %s\n",devicePath);
+ 				}
+ 			}
+ 
+-- 
+2.17.0
+
