@@ -21,7 +21,6 @@ KERNEL_EXTRA_INSTALL = " \
 WIFI_SUPPORT = " \
 	crda \
 	iw \
-	wireless-tools \
 	wpa-supplicant \
 	"
 
@@ -37,7 +36,6 @@ DEV_SDK_INSTALL = " \
 	g++ \
 	g++-symlinks \
 	gdb \
-	gdbserver \
 	gcc \
 	gcc-symlinks \
 	gettext \
@@ -53,8 +51,11 @@ DEV_SDK_INSTALL = " \
 	python3-modules \
 	"
 
+CORE_FW += "firmware-imx"
+
 EDITORS = " \
 	vim \
+    vim-keymaps \
 	nano \
 	"
 
@@ -97,6 +98,14 @@ MQTT = " \
 	python-paho-mqtt \
 	"
 
+ZWAVE = " \
+    openzwave \
+    mysland-ozw \
+    mysland-ozw-srv \
+    mysland-ozw-cli \
+    mysland-ozw-web \
+    "
+
 IMAGE_INSTALL += " \
 	${UTILS} \
 	${KERNEL_EXTRA_INSTALL} \
@@ -105,6 +114,7 @@ IMAGE_INSTALL += " \
 	${EDITORS} \
 	${DEV_EXTRAS} \
 	${TOOLS} \
+    ${CORE_FW} \
 	"
 
 export IMAGE_BASENAME = "wand-dual-image"

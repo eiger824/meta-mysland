@@ -15,7 +15,8 @@ SRC_URI = " \
 RDEPENDS_${PN} += "bash iptables openvpn"
 
 # We have a lot of kernel module dependencies
-RDEPENDS_${PN} += " \
+
+MODS_EXCLUDED += " \
     kernel-module-ip-tables \
     kernel-module-ipt-masquerade \
     kernel-module-iptable-filter \
@@ -25,6 +26,9 @@ RDEPENDS_${PN} += " \
     kernel-module-nf-defrag-ipv4 \
     kernel-module-nf-nat \
     kernel-module-x-tables \
+    "
+
+RDEPENDS_${PN} += " \
     "
 
 do_install() {

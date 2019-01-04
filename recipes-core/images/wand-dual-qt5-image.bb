@@ -21,7 +21,7 @@ QT5_PKGS_DONT_INCLUDE = " \
 	qtwebkit \
 	qtwebsockets \
 	qtxmlpatterns \
-	qtquick1 \
+	qtdeclarative \
 	qtquickcontrols \
 	qtquickcontrols2 \
 	qtscxml \
@@ -32,6 +32,10 @@ QT5_PKGS_DONT_INCLUDE = " \
 	qtenginio \
 	qtgamepad \
 	qtimageformats \
+	qtvirtualkeyboard \
+	qtcharts \
+	qtlocation \
+	qttools \
     "
 
 QT5_PKGS = " \
@@ -40,10 +44,7 @@ QT5_PKGS = " \
 	qtbase-mkspecs \
 	qtbase-plugins \
 	qtbase-tools \
-	qtcharts \
 	qtconnectivity \
-	qtdeclarative \
-	qtlocation \
 	qtmultimedia \
 	qtnetworkauth \
 	qtscript \
@@ -54,9 +55,7 @@ QT5_PKGS = " \
 	qtserialport-mkspecs \
 	qtsvg \
 	qtsystems \
-	qttools \
 	qttranslations \
-	qtvirtualkeyboard \
 	"
 
 FONTS = " \
