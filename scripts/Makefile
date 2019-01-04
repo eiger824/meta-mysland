@@ -5,10 +5,13 @@ DEVICE		:= /dev/sdb
 KERNEL		:= virtual/kernel
 BB 			:= bitbake
 
-all: image kernel
+# pi = package-index
+all: kernel image pi 
 
 image: $(IMAGE)
-kernel: $(KERNEL)
+
+# Rebuild image if building kernel
+kernel: $(KERNEL) $(IMAGE)
 
 $(KERNEL):
 	$(BB) $(KERNEL)
@@ -16,9 +19,14 @@ $(KERNEL):
 $(IMAGE):
 	$(BB) $(IMAGE)
 
+pi:
+	$(BB) package-index
+
 clean:
 	$(BB) $(KERNEL) -c cleansstate
 	$(BB) $(IMAGE) -c cleansstate
 
 flash:
-	@echo sudo bash -c "bmaptool copy $(IMAGEPATH)/$(IMAGE).wic $(DEVICE)"
+	@sudo bash -c "bmaptool copy $(IMAGEPATH)/$(IMAGE)-$(MACHINE).wic $(DEVICE)"
+	@sync
+
