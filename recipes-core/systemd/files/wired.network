@@ -1,0 +1,22 @@
+# Configuration file for wired adapters using a static IP
+[Match]
+Name=eth0
+
+[Network]
+Address=192.168.1.101/24
+Gateway=192.168.1.1
+DNS=192.168.1.1
+DNS=8.8.8.8
+DNS=8.8.4.4
+
+# Configuration file for wired adapters using a dynamic IP
+# [Match]
+# Name=eth0
+
+# [Network]
+# DHCP=ipv4
+
+# Note: The Metric option is for static routes while the RouteMetric option is for
+#       setups not using static routes.
+[DHCP]
+Metric=10

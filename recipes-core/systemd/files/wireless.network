@@ -1,0 +1,22 @@
+# Configuration file for wireless adapters using a static IP
+[Match]
+Name=wlan0
+
+[Network]
+Address=10.10.20.20/24
+Gateway=10.10.20.1
+DNS=10.10.20.1
+DNS=8.8.8.8
+DNS=8.8.4.4
+
+# Configuration file for wireless adapters using a dynamic IP
+# [Match]
+# Name=wlan0
+
+# [Network]
+# DHCP=ipv4
+
+# Note: The Metric option is for static routes while the RouteMetric option is for
+#       setups not using static routes.
+[DHCP]
+RouteMetric=20

@@ -3,7 +3,9 @@ DESCRIPTION = "A console image with some utilities"
 LICENSE = "MIT"
 
 IMAGE_FEATURES += "package-management" 
-inherit core-image
+
+# Let's base ourselves on FSL's multimedia image
+require recipes-fsl/images/fsl-image-multimedia-full.bb
 
 UTILS = " \
 	openssh \
@@ -88,7 +90,7 @@ TOOLS = "\
 	zip \
 	"
 
-CORE_FW = "firmware-imx linux-firmware"
+CORE_FW = "firmware-imx linux-firmware bcm4339-firmware"
 
 ZWAVE = "\
     openzwave \
@@ -151,7 +153,6 @@ MISCELLANEOUS = "\
     ftp-setup \
     wlan-setup \
     mesa \
-    u-boot-scr \
     ${CORE_PKGS} \
 	"
 

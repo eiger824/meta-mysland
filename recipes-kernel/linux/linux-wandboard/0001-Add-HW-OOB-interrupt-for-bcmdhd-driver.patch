@@ -1,0 +1,76 @@
+From d9f3c2ccffa4bad31a98212539496e49e7cb6a53 Mon Sep 17 00:00:00 2001
+From: Santi Pagola <santipagola@gmail.com>
+Date: Sat, 5 Jan 2019 10:13:38 +0100
+Subject: [PATCH] Add HW OOB interrup for bcmdhd driver
+
+---
+ arch/arm/boot/dts/imx6dl-wandboard-revb1.dts   | 1 +
+ arch/arm/boot/dts/imx6dl-wandboard.dts         | 1 +
+ arch/arm/boot/dts/imx6q-wandboard-revb1.dts    | 1 +
+ arch/arm/boot/dts/imx6q-wandboard.dts          | 1 +
+ arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi | 1 +
+ 5 files changed, 5 insertions(+)
+
+diff --git a/arch/arm/boot/dts/imx6dl-wandboard-revb1.dts b/arch/arm/boot/dts/imx6dl-wandboard-revb1.dts
+index 832382dcd6e0..eae37d7bf385 100644
+--- a/arch/arm/boot/dts/imx6dl-wandboard-revb1.dts
++++ b/arch/arm/boot/dts/imx6dl-wandboard-revb1.dts
+@@ -26,6 +26,7 @@
+ 	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+ 		compatible = "android,bcmdhd_wlan";
+ 		pinctrl-0 = <&pinctrl_wifi_ctrl>;
++		gpios = <&gpio1 29 0>;    /* WL_HOST_WAKE */
+ 		wlreg_on-supply = <&wlreg_on>;
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/imx6dl-wandboard.dts b/arch/arm/boot/dts/imx6dl-wandboard.dts
+index ef98f3d25d35..ba7311ccdfcf 100644
+--- a/arch/arm/boot/dts/imx6dl-wandboard.dts
++++ b/arch/arm/boot/dts/imx6dl-wandboard.dts
+@@ -26,6 +26,7 @@
+ 	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+ 		compatible = "android,bcmdhd_wlan";
+ 		pinctrl-0 = <&pinctrl_wifi_ctrl>;
++		gpios = <&gpio1 29 0>;    /* WL_HOST_WAKE */
+ 		wlreg_on-supply = <&wlreg_on>;
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/imx6q-wandboard-revb1.dts b/arch/arm/boot/dts/imx6q-wandboard-revb1.dts
+index da4866d51fa9..7dd2600054d2 100644
+--- a/arch/arm/boot/dts/imx6q-wandboard-revb1.dts
++++ b/arch/arm/boot/dts/imx6q-wandboard-revb1.dts
+@@ -26,6 +26,7 @@
+ 	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+ 		compatible = "android,bcmdhd_wlan";
+ 		pinctrl-0 = <&pinctrl_wifi_ctrl>;
++		gpios = <&gpio1 29 0>;    /* WL_HOST_WAKE */
+ 		wlreg_on-supply = <&wlreg_on>;
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/imx6q-wandboard.dts b/arch/arm/boot/dts/imx6q-wandboard.dts
+index e2f4347f692c..460f4d8eca1e 100644
+--- a/arch/arm/boot/dts/imx6q-wandboard.dts
++++ b/arch/arm/boot/dts/imx6q-wandboard.dts
+@@ -26,6 +26,7 @@
+ 	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+ 		compatible = "android,bcmdhd_wlan";
+ 		pinctrl-0 = <&pinctrl_wifi_ctrl>;
++		gpios = <&gpio1 29 0>;    /* WL_HOST_WAKE */
+ 		wlreg_on-supply = <&wlreg_on>;
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi b/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
+index 5d9741f66a6f..8c7fd2c1c434 100644
+--- a/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
+@@ -29,6 +29,7 @@
+ 		compatible = "android,bcmdhd_wlan";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_wifi_ctrl>;
++		gpios = <&gpio1 29 0>;    /* WL_HOST_WAKE */
+ 		wlreg_on-supply = <&wlreg_on>;
+ 	};
+ 
+-- 
+2.19.1
+
