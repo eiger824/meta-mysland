@@ -4,7 +4,7 @@ LICENSE = "MIT"
 
 require wand-dual-image.bb
 
-PV = "1.1"
+PV = "0.2"
 
 # Exclude for now. The problem is that since we are using the latest upstream kernel
 # (v4.16.5 as of 30/04/2018), the drivers for the Vivante GPU of the Wandboard Dual

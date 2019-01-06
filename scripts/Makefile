@@ -1,12 +1,19 @@
-IMAGE 		:= wand-dual-image 
-MACHINE 	:= wandboard
-IMAGEPATH 	:= ./tmp/deploy/images/$(MACHINE)
-DEVICE		:= /dev/sdb
-KERNEL		:= virtual/kernel
-PKGIDX		:= package-index
+# Default image
+DEFAULTIMAGE := wand-dual-qt5-image
+MACHINE 	 := wandboard
+IMAGEPATH 	 := ./tmp/deploy/images/$(MACHINE)
+DEVICE		 := /dev/sdb
+KERNEL		 := virtual/kernel
+PKGIDX		 := package-index
 # Preferrable over targets like "meta-toolchain[-X]"
-TOOLCHAINCMD:= -c populate_sdk
-BB 			:= bitbake
+TOOLCHAINCMD := -c populate_sdk
+BB 			 := bitbake
+
+# If IMAGE was not provided, set it to the default one
+ifndef IMAGE
+$(warning IMAGE was not set, setting it to $(DEFAULTIMAGE))
+IMAGE=$(DEFAULTIMAGE)
+endif
 
 # pi = package-index
 all: kernel image pi 
@@ -30,8 +37,11 @@ $(PKGIDX):
 pi:
 	$(BB) package-index
 
-clean:
+# Cleansstate targets
+clean: kernelclean imageclean 
+kernelclean:
 	$(BB) $(KERNEL) -c cleansstate
+imageclean:
 	$(BB) $(IMAGE) -c cleansstate
 
 flash:

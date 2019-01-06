@@ -7,6 +7,8 @@ IMAGE_FEATURES += "package-management"
 # Let's base ourselves on FSL's multimedia image
 require recipes-fsl/images/fsl-image-multimedia-full.bb
 
+PV = "0.2"
+
 UTILS = " \
     openssh \
     openssh-keygen \
