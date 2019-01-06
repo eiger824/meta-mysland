@@ -8,87 +8,87 @@ IMAGE_FEATURES += "package-management"
 require recipes-fsl/images/fsl-image-multimedia-full.bb
 
 UTILS = " \
-	openssh \
-	openssh-keygen \
-	openssh-sftp-server \
-	psplash \
-	tzdata \
-	"
+    openssh \
+    openssh-keygen \
+    openssh-sftp-server \
+    psplash \
+    tzdata \
+    "
 
 KERNEL_EXTRA_INSTALL = " \
-	kernel-modules \
-	"
+    kernel-modules \
+    "
 
 WIFI_SUPPORT = " \
-	crda \
-	iw \
-	wpa-supplicant \
-	"
+    crda \
+    iw \
+    wpa-supplicant \
+    "
 
 DEV_SDK_INSTALL = " \
-	bash \
-	binutils \
-	binutils-symlinks \
-	coreutils \
-	cpp \
-	cpp-symlinks \
-	diffutils \
-	file \
-	g++ \
-	g++-symlinks \
-	gdb \
-	gcc \
-	gcc-symlinks \
-	gettext \
-	git \
-	ldd \
-	libstdc++ \
-	libstdc++-dev \
-	libtool \
-	make \
+    bash \
+    binutils \
+    binutils-symlinks \
+    coreutils \
+    cpp \
+    cpp-symlinks \
+    diffutils \
+    file \
+    g++ \
+    g++-symlinks \
+    gdb \
+    gcc \
+    gcc-symlinks \
+    gettext \
+    git \
+    ldd \
+    libstdc++ \
+    libstdc++-dev \
+    libtool \
+    make \
     cmake \
-	perl-modules \
-	pkgconfig \
-	python-modules \
-	python3-modules \
-	"
+    perl-modules \
+    pkgconfig \
+    python-modules \
+    python3-modules \
+    "
 
 EDITORS = "\
-	vim \
+    vim \
     vim-keymaps \
-	nano \
-	"
+    nano \
+    "
 
 DEV_EXTRAS = "\
-	ntp \
-	ntp-tickadj \
-	"
+    ntp \
+    ntp-tickadj \
+    "
 
 TOOLS = "\
-	acpid \
-	bc \
-	bzip2 \
-	devmem2 \
-	dosfstools \
-	ethtool \
-	findutils \
-	i2c-tools \
-	iperf3 \
-	htop \
-	less \
-	memtester \
-	netcat \
-	procps \
-	rsync \
-	sysfsutils \
-	tcpdump \
-	unzip \
-	util-linux \
-	util-linux-blkid \
+    acpid \
+    bc \
+    bzip2 \
+    devmem2 \
+    dosfstools \
+    ethtool \
+    findutils \
+    i2c-tools \
+    iperf3 \
+    htop \
+    less \
+    memtester \
+    netcat \
+    procps \
+    rsync \
+    sysfsutils \
+    tcpdump \
+    unzip \
+    util-linux \
+    util-linux-blkid \
     util-linux-lscpu \
-	wget \
-	zip \
-	"
+    wget \
+    zip \
+    "
 
 CORE_FW = "firmware-imx linux-firmware bcm4339-firmware"
 
@@ -123,15 +123,13 @@ IPROUTE2 = "\
     iproute2-rtacct \
     "
 MISCELLANEOUS = "\
-	opkg \
-	opkg-utils \
-	bluez5 \
-	connman \
-	connman-conf \
+    opkg \
+    opkg-utils \
+    bluez5 \
+    connman \
+    connman-conf \
     bcm4339-nvram-config \
-	lsof \
-	ifupdown \
-	init-ifupdown \
+    lsof \
     fbset-modes \
     fbgrab \
     easy-rsa \
@@ -154,21 +152,21 @@ MISCELLANEOUS = "\
     wlan-setup \
     mesa \
     ${CORE_PKGS} \
-	"
+    "
 
 IMAGE_INSTALL += " \
-	${UTILS} \
-	${KERNEL_EXTRA_INSTALL} \
-	${WIFI_SUPPORT} \
-	${DEV_SDK_INSTALL} \
-	${EDITORS} \
-	${DEV_EXTRAS} \
-	${TOOLS} \
+    ${UTILS} \
+    ${KERNEL_EXTRA_INSTALL} \
+    ${WIFI_SUPPORT} \
+    ${DEV_SDK_INSTALL} \
+    ${EDITORS} \
+    ${DEV_EXTRAS} \
+    ${TOOLS} \
     ${CORE_FW} \
     ${OPENVPN} \
     ${IPROUTE2} \
     ${MISCELLANEOUS} \
-	"
+    "
 
 export IMAGE_BASENAME = "wand-dual-image"
 
